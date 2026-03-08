@@ -5,7 +5,13 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 const TARGET_URL = 'https://emotional-tts-uwn1.onrender.com/';
-const PING_INTERVAL = 10000; // 10 seconds
+const PING_INTERVAL = 60000; // 60 seconds (1 minute)
+
+// Helper function to get current time in Sri Lankan Time
+const getSLTString = (date) => {
+    if (!date) return 'N/A';
+    return date.toLocaleString('en-US', { timeZone: 'Asia/Colombo' });
+};
 
 // State to store the last ping results
 let lastLoadTime = null;
@@ -237,7 +243,7 @@ app.get('/', (req, res) => {
 <body>
     <div class="container">
         <h1>Emotional TTS Pinger</h1>
-        <p class="subtitle">Monitoring <code>https://emotional-tts-uwn1.onrender.com/</code> every 10 seconds.</p>
+        <p class="subtitle">Monitoring <code>https://emotional-tts-uwn1.onrender.com/</code> every 1 minute.</p>
         
         <div class="status-grid">
             <div class="status-card full-width ${lastError ? 'error' : (lastStatus.includes('Success') ? 'success' : '')}">
@@ -247,19 +253,14 @@ app.get('/', (req, res) => {
             </div>
             
             <div class="status-card">
-                <div class="label">Last Attempt</div>
-                <div class="value">${lastLoadTime ? lastLoadTime.toLocaleTimeString() : 'N/A'}</div>
-            </div>
-            
-            <div class="status-card">
-                <div class="label">Date</div>
-                <div class="value">${lastLoadTime ? lastLoadTime.toLocaleDateString() : 'N/A'}</div>
+                <div class="label">Last Attempt (SLT)</div>
+                <div class="value">${getSLTString(lastLoadTime)}</div>
             </div>
         </div>
         
         <div class="footer">
             <div class="ping-indicator ${lastError ? 'error' : ''}"></div>
-            Pinging active • Automatically refreshing
+            Pinging active every 1 minute • Automatically refreshing
         </div>
     </div>
 </body>
